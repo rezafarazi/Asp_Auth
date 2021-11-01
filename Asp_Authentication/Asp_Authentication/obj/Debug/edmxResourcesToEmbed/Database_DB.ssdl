@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="First_DBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'First_DB.dbo.user_profile_image' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="user_profile_image">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="user_id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="image_address" Type="nchar" MaxLength="256" />
+  </EntityType>
+  <EntityType Name="users">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nchar" MaxLength="50" />
+    <Property Name="family" Type="nchar" MaxLength="50" />
+    <Property Name="national_id" Type="nchar" MaxLength="10" />
+    <Property Name="status" Type="char" MaxLength="4" />
+  </EntityType>
+  <Association Name="FK_user_profile_image_users">
+    <End Role="users" Type="Self.users" Multiplicity="1" />
+    <End Role="user_profile_image" Type="Self.user_profile_image" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="user_profile_image">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="First_DBModelStoreContainer">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="user_profile_image" EntityType="Self.user_profile_image" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [user_profile_image].[id] AS [id], 
+    [user_profile_image].[user_id] AS [user_id], 
+    [user_profile_image].[image_address] AS [image_address]
+    FROM [dbo].[user_profile_image] AS [user_profile_image]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_user_profile_image_users" Association="Self.FK_user_profile_image_users">
+      <End Role="users" EntitySet="users" />
+      <End Role="user_profile_image" EntitySet="user_profile_image" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

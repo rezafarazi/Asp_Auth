@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="First_DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="user">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <Property Name="family" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+    <Property Name="national_id" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="status" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+    <NavigationProperty Name="user_profile_image" Relationship="Self.FK_user_profile_image_users" FromRole="users" ToRole="user_profile_image" />
+  </EntityType>
+  <EntityType Name="user_profile_image">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="user_id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="user_id" Type="Int32" Nullable="false" />
+    <Property Name="image_address" Type="String" MaxLength="256" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="user" Relationship="Self.FK_user_profile_image_users" FromRole="user_profile_image" ToRole="users" />
+  </EntityType>
+  <Association Name="FK_user_profile_image_users">
+    <End Role="users" Type="Self.user" Multiplicity="1" />
+    <End Role="user_profile_image" Type="Self.user_profile_image" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="user_profile_image">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="First_DBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="users" EntityType="Self.user" />
+    <EntitySet Name="user_profile_image" EntityType="Self.user_profile_image" />
+    <AssociationSet Name="FK_user_profile_image_users" Association="Self.FK_user_profile_image_users">
+      <End Role="users" EntitySet="users" />
+      <End Role="user_profile_image" EntitySet="user_profile_image" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
